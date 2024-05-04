@@ -1,0 +1,4 @@
+[submodule "Sources/CubismNativeFramework"]
+	path = Sources/CubismNativeFramework
+	url = git@github.com:subdiox/CubismNativeFramework.git
+	branch = metal
