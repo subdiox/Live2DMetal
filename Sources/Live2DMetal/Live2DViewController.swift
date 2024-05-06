@@ -3,24 +3,33 @@ import Metal
 import QuartzCore
 import Live2DMetalObjC
 import CubismNativeFramework
+import Combine
 
 public final class Live2DViewController: UIViewController {
     public var commandQueue: MTLCommandQueue?
 
-    private lazy var live2DManager = LAppLive2DManager(resourcesPath: resourcesPath, modelName: modelName)!
+    private lazy var live2DManager = {
+        let manager = Live2DManager(resourcesPath: resourcesPath, modelName: modelName)
+        manager.delegate = self
+        return manager
+    }()
     private var depthTexture: MTLTexture?
     private var deviceToScreen = Csm.CubismMatrix44() // A matrix from device to screen
     private var viewMatrix = Csm.CubismViewMatrix()
     private var lastTouchPoint: CGPoint = .zero
+    private var subscriptions = Set<AnyCancellable>()
     private let resourcesPath: String
     private let modelName: String
+    private let viewModel: Live2DViewModel
 
     public init(
         resourcesPath: String,
-        modelName: String
+        modelName: String,
+        viewModel: Live2DViewModel
     ) {
         self.resourcesPath = resourcesPath
         self.modelName = modelName
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -77,6 +86,7 @@ public final class Live2DViewController: UIViewController {
         let x = deviceToScreen.TransformX(Float(lastTouchPoint.x))
         let y = deviceToScreen.TransformY(Float(lastTouchPoint.y))
         live2DManager.onTap(x: x, y: y)
+        viewModel.isAwake.toggle()
     }
 }
 
@@ -228,5 +238,17 @@ extension Live2DViewController: MetalViewDelegate {
 extension Live2DViewController: TextureManagerDelegate {
     public var metalLayer: CAMetalLayer? {
         (view as? MetalUIView)?.metalLayer
+    }
+}
+
+extension Live2DViewController: Live2DManagerDelegate {
+    func modelDidLoad() {
+        viewModel.$isAwake.sink { [weak self] isAwake in
+
+        }.store(in: &subscriptions)
+
+        viewModel.$isTalking.sink { [weak self] isTalking in
+            self?.live2DManager.isTalking = isTalking
+        }.store(in: &subscriptions)
     }
 }

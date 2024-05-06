@@ -36,7 +36,6 @@ namespace LAppDefine {
 
     // デバッグ用ログの表示
     extern const csmBool DebugLogEnable;            ///< デバッグ用ログ表示の有効・無効
-    extern const csmBool DebugTouchLogEnable;       ///< タッチ処理のデバッグ用ログ表示の有効・無効
 
     // Frameworkから出力するログのレベル設定
     extern const CubismFramework::Option::LogLevel CubismLoggingLevel;

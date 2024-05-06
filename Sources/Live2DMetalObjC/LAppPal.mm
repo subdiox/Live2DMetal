@@ -26,17 +26,7 @@ double LAppPal::s_deltaTime = 0.0;
 
 csmByte* LAppPal::LoadFileAsBytes(const string filePath, csmSizeInt* outSize)
 {
-    int path_i = static_cast<int>(filePath.find_last_of("/")+1);
-    int ext_i = static_cast<int>(filePath.find_last_of("."));
-    std::string pathname = filePath.substr(0,path_i);
-    std::string extname = filePath.substr(ext_i,filePath.size()-ext_i);
-    std::string filename = filePath.substr(path_i,ext_i-path_i);
-    NSString* castFilePath = [[NSBundle mainBundle]
-                              pathForResource:[NSString stringWithUTF8String:filename.c_str()]
-                              ofType:[NSString stringWithUTF8String:extname.c_str()]
-                              inDirectory:[NSString stringWithUTF8String:pathname.c_str()]];
-
-    NSData *data = [NSData dataWithContentsOfFile:castFilePath];
+    NSData *data = [NSData dataWithContentsOfFile:[NSString stringWithUTF8String:filePath.c_str()]];
 
     if (data == nil)
     {
