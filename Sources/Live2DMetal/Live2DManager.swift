@@ -97,7 +97,16 @@ final class Live2DManager {
             projection.MultiplyByMatrix(&viewMatrix)
         }
 
-        let lipSyncValue = abs((model.userTimeSeconds - floor(model.userTimeSeconds)) - 0.5) * 2
+        let value = (model.userTimeSeconds - floor(model.userTimeSeconds)) * 4
+        let lipSyncValue = if value < 1 {
+            value
+        } else if value < 2 {
+            2 - value
+        } else if value < 3 {
+            value - 2
+        } else {
+            (4 - value) * 0.7
+        }
         model.update(isTalking ? lipSyncValue : 0)
         model.draw(with: &projection)
     }
