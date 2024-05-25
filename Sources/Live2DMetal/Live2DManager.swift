@@ -51,7 +51,7 @@ final class Live2DManager {
             if LAppDefine.DebugLogEnable {
                 print("[APP]hit area: [\(LAppDefine.HitAreaNameBody)]")
             }
-            model.startRandomMotion(LAppDefine.MotionGroupTapBody, priority: LAppDefine.PriorityNormal)
+            model.startRandomMotion(LAppDefine.MotionGroupSmile, priority: LAppDefine.PriorityNormal)
         }
     }
 
